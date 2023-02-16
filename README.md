@@ -1,0 +1,1 @@
+Integration between 1c and jira portal
