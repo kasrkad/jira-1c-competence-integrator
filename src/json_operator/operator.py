@@ -1,3 +1,4 @@
+from distutils.errors import CompileError
 import json
 from logger_config.logger_data import create_logger
 
@@ -73,8 +74,9 @@ def competence_converting(project_profiles: list) -> list:
         result_competences = [{"id": "-1", "name": template_name,
                                "isHeader": True, "mandatory": False}]
         for competence in profile["competences"]:
-            competence["mandatory"] = False
-            result_competences.append(competence)
+            if competence["name"]:
+                competence["mandatory"] = False
+                result_competences.append(competence)
         project_competences.append({"template_name": template_name,
                                     "competences": str(json.dumps(result_competences,
                                                                   ensure_ascii=False))})

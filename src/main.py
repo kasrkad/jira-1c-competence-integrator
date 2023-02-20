@@ -15,7 +15,7 @@ def main():
         main_logger.info("getting all jira projects")
         projects = jira_get_all_projects()
         main_logger.info("load data from 1c.json")
-        data_from_1c = load_1c_data_from_file("1c_test.json")
+        data_from_1c = load_1c_data_from_file("./1c/1c.json")
         main_logger.info("create jira projects with ids list")
         project_jira_id = jira_id_for_1c(
             data_1c=data_from_1c, data_jira=projects)
@@ -28,18 +28,24 @@ def main():
 
         need_create = 0
         need_update = 0
+        errors = 0
         main_logger.info("checking templates for create and update")
         for project_template_name, project_data in comparing_1c.items():
-            if project_template_name not in comparing_jira:
-                checklist_loader(checklist_data=project_data)
-                need_create += 1
-            else:
-                checklist_updater(
-                    checklist_id=comparing_jira[project_template_name],
-                    update_data=project_data["itemsJson"])
-                need_update += 1
+            try:
+                if project_template_name not in comparing_jira:
+                    checklist_loader(checklist_data=project_data)
+                    need_create += 1
+                else:
+                    checklist_updater(
+                        checklist_id=comparing_jira[project_template_name],
+                        update_data=project_data["itemsJson"])
+                    need_update += 1
+            except Exception as exc:
+                errors += 1
+                main_logger.error(str(exc))
+                continue
 
-        main_logger.info(f"Created {need_create}, updated {need_update}")
+        main_logger.info(f"Created {need_create}, updated {need_update}, errors {errors}")
     except Exception:
         main_logger.critical(
             "В основном потоке произошла ошибка", exc_info=True)
