@@ -10,6 +10,7 @@ main_logger = create_logger(__name__)
 
 def main():
     try:
+        main_logger.info("getting all jira templates")
         all_templates = jira_get_all_templates()
         main_logger.info("getting all jira projects")
         projects = jira_get_all_projects()
