@@ -43,7 +43,7 @@ def get_issues_data(startAt:int = 0) -> list:
     return response.json()["issues"]
 
 
-def users_with_competences() -> dict:
+def users_with_competences(competence_codes:dict) -> dict:
     """Выдергиваем из списка талонов пользователей
     и проставленные компетенции
 
@@ -61,7 +61,11 @@ def users_with_competences() -> dict:
                 result_users[assignee_name] = set()
             for competence in issue["fields"]["customfield_15553"]:
                 if competence["checked"]:
-                    result_users[assignee_name].add(competence["name"])
+                    competence_code = competence_codes.get(competence["name"],None)
+                    if competence_code:
+                        result_users[assignee_name].add(competence_code)
+                    else:
+                        scanner_logger.warn(f"не найден код для {competence['name']}, пользователя {assignee_name}")
         if len(issues) < 1000:
             break
         page += 1000
