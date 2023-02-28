@@ -14,7 +14,7 @@ except Exception:
     exit()
 
 #TODO уточнить за какое время нужно выбирать талоны
-def get_issues_data(startAt:int = 0) -> list:
+def get_issues_data(startAt:int = 0,jql:str="resolutiondate >= startOfMonth(-1)") -> list:
     """Забираем все тикеты зарезовленные тикеты за 30 дней
 
     Args:
@@ -27,7 +27,7 @@ def get_issues_data(startAt:int = 0) -> list:
             token=JIRA_AUTH_TOKEN), "Accept": "application/json"}
     
     query = {
-    'jql': 'resolutiondate > -30d',
+    'jql': jql,
     'maxResults': 1000,
     'startAt':startAt, 
     'fields':'assignee,customfield_15553'
@@ -37,9 +37,12 @@ def get_issues_data(startAt:int = 0) -> list:
         with requests.Session() as request:
             response = request.get(ISSUE_REQUEST.format(
                     jira_host=JIRA_HOST), headers=headers,params=query)
+        if not response.ok:
+            raise (ValueError(f'Проверьте параметры запроса для поиска ответ от = {response.text}'))
     except Exception:
-        scanner_logger.error(f"Произошла ошибка при запросе с параметром {startAt}", exc_info=True)
-    
+        scanner_logger.error(f"Произошла ошибка при запросе талонов", exc_info=True)
+        raise
+
     return response.json()["issues"]
 
 
