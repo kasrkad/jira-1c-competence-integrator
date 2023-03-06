@@ -103,9 +103,10 @@ def data_from_1c_compare(data_1c: dict, jira_id: dict) -> dict:
         project_name = project["name"]
         project_competences = competence_converting(project["profiles"])
         for template_data in project_competences:
-            base_json = {"fieldConfigId": 17262,
-                         "items": None, "importable": True,
-                         "customFiledId": 15553}
+            base_json = {"customFiledId": 15950,
+                        "fieldConfigId": 17761,
+                        "items": None,
+                        "importable": True}
             base_json["project"] = jira_project_id
             base_json["name"] = template_data["template_name"]
             base_json["itemsJson"] = template_data["competences"]
