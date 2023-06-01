@@ -84,7 +84,7 @@ def checklist_loader(checklist_data: dict) -> None:
                                 headers=headers, data=json.dumps(checklist_data))
         if not response.ok:
             raise ValueError(
-                f'Проблема при создании шаблона код ответа {response.status_code} текст ошибки {response.text}')
+                f'Проблема при создании шаблона код ответа {response.status_code} текст ошибки {response.text}\n {checklist_data}')
    
 
 def checklist_delete(template_id: int) -> None:
