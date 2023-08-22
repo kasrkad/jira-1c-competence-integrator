@@ -14,8 +14,11 @@ now = datetime.now()
 date_time = now.strftime("%Y.%m.%d")
 
 
-codes = get_competence_codes(load_1c_data_from_file("./1c/1c_big.json"))
-issues_data = get_issues_data()
+codes = get_competence_codes(load_1c_data_from_file("./1c/1c.json"))
+issues_data = get_issues_data(jql="issue in (EO-5291,EO-5305,MES-2481,MES-4520,MES-4823)")
+
+with open('comp.json', 'w', encoding='utf8') as f:
+    json.dump(codes, f, ensure_ascii=False,indent=2)
 
 with open('res.json', 'w', encoding='utf8') as f:
     json.dump(issues_data, f, ensure_ascii=False,indent=2)
